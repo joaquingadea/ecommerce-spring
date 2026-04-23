@@ -11,12 +11,13 @@ import java.util.UUID;
 
 @Service
 public class FileStorageService {
+    
     private final String uploadDir = "uploads/";
 
     public String saveFile(MultipartFile file){
         try {
 
-            // random ID + nombre del archivo
+            // random ID + nombre del archivo (evita que se guarden archivos con nombre igual)
             String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
 
             // path = "uploads/fileName"
