@@ -3,7 +3,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.math.BigDecimal;
 import java.util.Set;
 
-public record CreateProductRequestDTO(
+public record CreateProductDTO(
         String name,
         String description,
         BigDecimal price,
