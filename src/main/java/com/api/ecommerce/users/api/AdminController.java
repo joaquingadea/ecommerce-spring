@@ -2,8 +2,7 @@ package com.api.ecommerce.users.api;
 
 import com.api.ecommerce.products.application.IProductCategoryService;
 import com.api.ecommerce.products.application.IProductService;
-import com.api.ecommerce.products.dto.request.CreateProductRequestDTO;
-import com.api.ecommerce.products.dto.response.ProductSinglePageDTO;
+import com.api.ecommerce.products.dto.request.CreateProductDTO;
 import com.api.ecommerce.shared.web.ApiResponse;
 import com.api.ecommerce.users.application.IAppUserService;
 import com.api.ecommerce.users.dto.response.UserIdUsernameDTO;
@@ -29,7 +28,7 @@ public class AdminController {
     }
 
     @PostMapping("/create-product")
-    public ResponseEntity<ApiResponse> createProduct(@RequestBody CreateProductRequestDTO requestDTO){
+    public ResponseEntity<ApiResponse> createProduct(@RequestBody CreateProductDTO requestDTO){
         productService.create(requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ApiResponse("Product successfully created!"));
@@ -48,8 +47,8 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(appUserService.findAllIdAndUsername(pageRequest));
     }
-    @GetMapping("/product-list")
+    /*@GetMapping("/product-list")
     public ResponseEntity<Page<ProductSinglePageDTO>> getProducts(@PageableDefault(size = 10,page = 0)Pageable pageable){
 
-    }
+    }*/
 }
