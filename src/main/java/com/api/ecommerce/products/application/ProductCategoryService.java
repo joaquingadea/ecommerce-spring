@@ -18,4 +18,11 @@ public class ProductCategoryService implements IProductCategoryService{
         ProductCategory newCategory = new ProductCategory(1L, requestCategory);
         productCategoryRepository.save(newCategory);
     }
+
+    @Override
+    public void edit(Long id, String newName) {
+        ProductCategory productCategoryRepo = productCategoryRepository.findById(id).orElseThrow();
+        productCategoryRepo.setName(newName);
+        productCategoryRepository.save(productCategoryRepo);
+    }
 }
