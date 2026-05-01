@@ -34,4 +34,15 @@ public class FileStorageService {
             throw new RuntimeException(e);
         }
     }
+
+    public void deleteImage(String imagePath){
+        try {
+            Path path = Paths.get(imagePath);
+            Files.deleteIfExists(path);
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
