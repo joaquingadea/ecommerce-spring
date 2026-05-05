@@ -5,11 +5,12 @@ import com.api.ecommerce.users.dto.response.UserIdUsernameDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface IAppUserRepository extends JpaRepository<AppUser,Long> {
+public interface IAppUserRepository extends JpaRepository<AppUser,Long>, JpaSpecificationExecutor<AppUser> {
     @Query("""
             SELECT u.id AS id, u.username AS username FROM AppUser u
             """)
