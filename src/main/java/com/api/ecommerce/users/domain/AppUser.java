@@ -15,6 +15,8 @@ import java.util.Set;
 public class AppUser {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String name;
+    private String lastName;
     @Column(unique = true,nullable = false)
     private String username;
     private String password;
