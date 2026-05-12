@@ -3,9 +3,11 @@ package com.api.ecommerce.cart.api;
 import com.api.ecommerce.cart.application.ICartService;
 import com.api.ecommerce.cart.dto.response.CartItemDTO;
 import com.api.ecommerce.shared.web.ApiResponse;
+import com.api.ecommerce.users.infrastructure.security.CustomUserDetails;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -22,33 +24,38 @@ public class CartController {
     }
 
     @PostMapping("/item/add/{productId}")
-    public ResponseEntity<ApiResponse> addItem(@PathVariable Long productId, @RequestBody Integer quantity, Authentication authentication){
-        cartService.addItem(productId,quantity,null); // sacado de la authentication
+    public ResponseEntity<ApiResponse> addItem(@PathVariable Long productId,
+                                               @RequestBody Integer quantity,
+                                               @AuthenticationPrincipal CustomUserDetails userDetails){
+        cartService.addItem(productId,quantity,userDetails.getId());
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Product added successfully!"));
     }
     @PatchMapping("/item/increase/{itemId}")
-    public ResponseEntity<ApiResponse> increaseItemQuantity(@PathVariable Long itemId, Authentication authentication){
-        cartService.increaseItem(itemId,null); // sacado de la authentication
+    public ResponseEntity<ApiResponse> increaseItemQuantity(@PathVariable Long itemId,
+                                                            @AuthenticationPrincipal CustomUserDetails userDetails){
+        cartService.increaseItem(itemId,userDetails.getId());
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Item updated successfully!"));
     }
     @PatchMapping("/item/decrease/{itemId}")
-    public ResponseEntity<ApiResponse> decreaseItemQuantity(@PathVariable Long itemId, Authentication authentication){
-        cartService.decreaseItem(itemId,null); // sacado de la authentication
+    public ResponseEntity<ApiResponse> decreaseItemQuantity(@PathVariable Long itemId,
+                                                            @AuthenticationPrincipal CustomUserDetails userDetails){
+        cartService.decreaseItem(itemId,userDetails.getId());
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Item updated successfully!"));
     }
     @DeleteMapping("/item/delete/{itemId}")
-    public ResponseEntity<ApiResponse> deleteItem(@PathVariable Long itemId,Authentication authentication){
-        cartService.deleteItem(itemId,null);
+    public ResponseEntity<ApiResponse> deleteItem(@PathVariable Long itemId,
+                                                  @AuthenticationPrincipal CustomUserDetails userDetails){
+        cartService.deleteItem(itemId, userDetails.getId());
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Item deleted successfully!"));
     }
     @GetMapping("/get")
-    public ResponseEntity<List<CartItemDTO>> getCart(Authentication authentication){
+    public ResponseEntity<List<CartItemDTO>> getCart(@AuthenticationPrincipal CustomUserDetails userDetails){
         return ResponseEntity.status(HttpStatus.OK)
-                .body(cartService.getCart(null)); // sacado de la authentication
+                .body(cartService.getCart(userDetails.getId()));
     }
     @GetMapping("/get-total-cart")
-    public ResponseEntity<BigDecimal> getTotalCart(Authentication authentication){
+    public ResponseEntity<BigDecimal> getTotalCart(@AuthenticationPrincipal CustomUserDetails userDetails){
         return ResponseEntity.status(HttpStatus.OK)
-                .body(cartService.getTotal(null)); // sacado de la authentication
+                .body(cartService.getTotal(userDetails.getId()));
     }
 }
