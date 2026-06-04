@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -20,7 +21,11 @@ public class Product {
     private Integer stock;
     private BigDecimal unitPrice;
     private Integer unitsSold;
-    @OneToMany(mappedBy = "product",fetch = FetchType.LAZY, orphanRemoval = true)
+    private LocalDateTime uploadDate;
+    @OneToMany(mappedBy = "product",
+            fetch = FetchType.LAZY,
+            orphanRemoval = true,
+            cascade = CascadeType.ALL)
     private List<ProductImage> images;
     @ManyToMany
     @JoinTable(name = "product_categories",
