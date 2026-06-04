@@ -39,10 +39,11 @@ public class ProductController {
     public ResponseEntity<Page<PublicProductDTO>> getPublicProducts(
             @RequestParam(required = false) String search,
             @RequestParam(required = false) Long category,
-            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) String sortByPrice,
             @RequestParam(required = false) Boolean bestSellers,
+            @RequestParam(required = false) String sortByDate,
             @PageableDefault(size = 9, page = 0) Pageable pageable) throws BadRequestException {
-        Sort sortPageRequest = ProductSortBuilder.build(sort,bestSellers);
+        Sort sortPageRequest = ProductSortBuilder.build(sortByPrice,bestSellers,sortByDate);
         Pageable pageRequest = PaginationConstants.validatePageable(pageable.getPageNumber(),pageable.getPageSize(),sortPageRequest);
         ProductFilter filter = new ProductFilter(search,category);
         return ResponseEntity.status(HttpStatus.OK)
