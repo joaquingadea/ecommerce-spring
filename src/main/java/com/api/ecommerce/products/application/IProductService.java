@@ -7,6 +7,7 @@ import com.api.ecommerce.products.dto.request.ProductFilter;
 import com.api.ecommerce.products.dto.response.AllDataProductDTO;
 import com.api.ecommerce.products.dto.response.ProductSinglePageDTO;
 import com.api.ecommerce.products.dto.response.PublicProductDTO;
+import org.jspecify.annotations.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -18,4 +19,5 @@ public interface IProductService {
     void editById(Long id, EditProductDTO requestDTO);
     void deactivate(Long id);
     void activate(Long id);
+    AllDataProductDTO getAllDataProduct(Long id);
 }
