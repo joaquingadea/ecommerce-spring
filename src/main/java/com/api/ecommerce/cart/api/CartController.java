@@ -1,6 +1,7 @@
 package com.api.ecommerce.cart.api;
 
 import com.api.ecommerce.cart.application.ICartService;
+import com.api.ecommerce.cart.dto.request.AddToCartRequestDTO;
 import com.api.ecommerce.cart.dto.response.CartItemDTO;
 import com.api.ecommerce.shared.security.jwt.JwtPrincipal;
 import com.api.ecommerce.shared.web.ApiResponse;
@@ -24,25 +25,32 @@ public class CartController {
         this.cartService = cartService;
     }
 
-    @PostMapping("/item/add/{productId}")
+    @PostMapping("/item/add-to-cart/{productId}")
     public ResponseEntity<ApiResponse> addItem(@PathVariable Long productId,
-                                               @RequestBody Integer quantity,
+                                               @RequestBody AddToCartRequestDTO requestDTO,
                                                @AuthenticationPrincipal JwtPrincipal auth){
-        cartService.addItem(productId,quantity,auth.userId());
+        cartService.addToCart(productId,requestDTO.quantity(),auth.userId());
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Product added successfully!"));
     }
     @PatchMapping("/item/increase/{itemId}")
-    public ResponseEntity<ApiResponse> increaseItemQuantity(@PathVariable Long itemId,
-                                                            @AuthenticationPrincipal JwtPrincipal auth){
-        cartService.increaseItem(itemId,auth.userId());
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Item updated successfully!"));
+    public ResponseEntity<ApiResponse> increase(@PathVariable Long itemId, @AuthenticationPrincipal JwtPrincipal auth) {
+
+        cartService.increaseItem(itemId, auth.userId());
+
+        return ResponseEntity.ok(
+                new ApiResponse("Quantity increased")
+        );
     }
     @PatchMapping("/item/decrease/{itemId}")
-    public ResponseEntity<ApiResponse> decreaseItemQuantity(@PathVariable Long itemId,
-                                                            @AuthenticationPrincipal JwtPrincipal auth){
-        cartService.decreaseItem(itemId,auth.userId());
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Item updated successfully!"));
+    public ResponseEntity<ApiResponse> decreaseItem(@PathVariable Long itemId, @AuthenticationPrincipal JwtPrincipal auth) {
+
+        cartService.decreaseItem(itemId, auth.userId());
+
+        return ResponseEntity.ok(
+                new ApiResponse("Quantity decreased")
+        );
     }
+
     @DeleteMapping("/item/delete/{itemId}")
     public ResponseEntity<ApiResponse> deleteItem(@PathVariable Long itemId,
                                                   @AuthenticationPrincipal JwtPrincipal auth){
