@@ -61,7 +61,7 @@ public class CartService implements ICartService{
     }
 
     @Override
-    public void createOrUpdateItem(Long productId,Integer quantity,Long userId) {
+    public void addToCart(Long productId,Integer quantity,Long userId) {
         Product product = productRepository.findById(productId).orElseThrow();
         Cart userCart = userRepository.findById(userId).orElseThrow().getUserCart();
         CartItem item = getOrCreateCartItem(userCart,product);
@@ -74,6 +74,32 @@ public class CartService implements ICartService{
         if (newQuantity > product.getStock()){
             throw new RuntimeException("Invalid quantity!");
         }
+
+        updateCartItemQuantity(item,newQuantity,userId);
+    }
+
+    @Override
+    public void increaseItem(Long itemId, Long userId) {
+
+        CartItem item =
+                cartItemRepository.findById(itemId)
+                        .orElseThrow();
+
+        Integer newQuantity =
+                item.getQuantity() + 1;
+
+        updateCartItemQuantity(
+                item,
+                newQuantity,
+                userId
+        );
+    }
+    @Override
+    public void decreaseItem(Long itemId, Long userId) {
+        CartItem item = cartItemRepository.findById(itemId)
+                .orElseThrow();
+
+        Integer newQuantity = item.getQuantity() - 1;
 
         updateCartItemQuantity(item,newQuantity,userId);
     }
@@ -93,13 +119,20 @@ public class CartService implements ICartService{
 
     @Override
     public BigDecimal getTotal(Long userId) {
+
         AppUser user = userRepository.findById(userId).orElseThrow();
+
         BigDecimal total = BigDecimal.ZERO;
-        user.getUserCart()
-            .getItems()
-            .forEach(item ->
-                    total.add(item.getProduct().getUnitPrice()
-                            .multiply(BigDecimal.valueOf(item.getQuantity()))));
+
+        for (CartItem item : user.getUserCart().getItems()) {
+
+            total = total.add(
+                    item.getProduct()
+                            .getUnitPrice()
+                            .multiply(BigDecimal.valueOf(item.getQuantity()))
+            );
+        }
+
         return total;
     }
 
