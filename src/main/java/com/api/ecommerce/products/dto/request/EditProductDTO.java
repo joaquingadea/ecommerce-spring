@@ -1,8 +1,6 @@
 package com.api.ecommerce.products.dto.request;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
@@ -17,7 +15,9 @@ public record EditProductDTO(
         BigDecimal unitPrice,
         @Min(value = 0)
         Integer stock,
+        @NotNull
         List<Long> deleteImages,
+        @Size(max = 6) @NotNull
         List<MultipartFile> newImages,
         @Size(min = 1)
         List<Long> categories
