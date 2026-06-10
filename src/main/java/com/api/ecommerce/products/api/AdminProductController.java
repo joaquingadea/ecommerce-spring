@@ -13,6 +13,8 @@ import com.api.ecommerce.shared.web.ApiResponse;
 import com.api.ecommerce.shared.web.PaginationConstants;
 import com.api.ecommerce.users.application.IAppUserService;
 import com.api.ecommerce.users.dto.response.UserIdUsernameDTO;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +24,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,6 +32,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+@Validated
 @RestController
 @RequestMapping("/admin")
 public class AdminProductController {
@@ -41,22 +45,13 @@ public class AdminProductController {
         this.productCategoryService = productCategoryService;
     }
 
-    /*@PostMapping("/create-product")
-    public ResponseEntity<ApiResponse> createProduct(@RequestBody CreateProductDTO requestDTO){
-        productService.create(requestDTO);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ApiResponse("Product successfully created!"));
-    }*/
-
     @PostMapping(value = "/create-product", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> createProduct(
-            @RequestParam("name") String name,
-            @RequestParam("description") String description,
-            @RequestParam("price") BigDecimal unitPrice,
-            @RequestParam("stock") Integer stock,
-            @RequestParam("categoryId") Long categoryId,
-            @RequestParam("images") List<MultipartFile> images
-    ) {
+    public ResponseEntity<?> createProduct(@NotBlank @RequestParam("name") String name,
+                                           @NotBlank @RequestParam("description") String description,
+                                           @NotNull @Positive @RequestParam("price") BigDecimal unitPrice,
+                                           @NotNull @PositiveOrZero @RequestParam("stock") Integer stock,
+                                           @NotNull @RequestParam("categoryId") Long categoryId,
+                                           @NotEmpty @RequestParam("images") List<MultipartFile> images) {
         List<Long> ids = new ArrayList<>();
         ids.add(categoryId);
         CreateProductDTO request = new CreateProductDTO(
