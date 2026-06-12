@@ -22,13 +22,11 @@ public class CartService implements ICartService{
     private IAppUserRepository userRepository;
     private IProductRepository productRepository;
     private ICartItemRepository cartItemRepository;
-    private ICartRepository cartRepository;
 
-    public CartService(IAppUserRepository userRepository, IProductRepository productRepository, ICartItemRepository cartItemRepository, ICartRepository cartRepository) {
+    public CartService(IAppUserRepository userRepository, IProductRepository productRepository, ICartItemRepository cartItemRepository) {
         this.userRepository = userRepository;
         this.productRepository = productRepository;
         this.cartItemRepository = cartItemRepository;
-        this.cartRepository = cartRepository;
     }
 
     public CartItem getOrCreateCartItem(Cart cart, Product product){
