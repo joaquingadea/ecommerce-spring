@@ -16,4 +16,10 @@ public class ProductImage {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
+    // Constructor para tests
+    public ProductImage(Long id, String url) {
+        this.id = id;
+        this.url = url;
+    }
 }
