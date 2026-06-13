@@ -1,5 +1,6 @@
 package com.api.ecommerce.orders.domain;
 
+import com.api.ecommerce.payments.domain.Payment;
 import com.api.ecommerce.users.domain.AppUser;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,4 +25,7 @@ public class Order {
     private List<OrderDetail> ticket = new ArrayList<>();
     @ManyToOne
     private AppUser user;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<Payment> paymentAttempts;
+    private BigDecimal total;
 }
