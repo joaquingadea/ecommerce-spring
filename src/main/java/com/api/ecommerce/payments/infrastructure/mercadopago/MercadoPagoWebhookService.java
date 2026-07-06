@@ -1,6 +1,7 @@
 package com.api.ecommerce.payments.infrastructure.mercadopago;
 
 import com.api.ecommerce.payments.application.IPaymentService;
+import com.api.ecommerce.payments.domain.Payment;
 import com.api.ecommerce.payments.domain.PaymentGateway;
 import com.api.ecommerce.payments.dto.response.ExternalPaymentDetailsDTO;
 import com.api.ecommerce.payments.infrastructure.mercadopago.dto.request.MercadoPagoNotificationDTO;
@@ -26,13 +27,17 @@ public class MercadoPagoWebhookService {
 
             ExternalPaymentDetailsDTO paymentDetailsDTO = paymentGateway.getPayment(mercadoPagoPaymentId);
 
+            Payment payment = paymentService.findById(paymentDetailsDTO.internalPaymentId());
+
+            paymentService.attachMercadoPagoPaymentId(payment, mercadoPagoPaymentId);
+
             if (!"payment".equals(notification.getType())) {
                 return;
             }
 
             switch (paymentDetailsDTO.status()) {
-                case APPROVED -> paymentService.markAsPaid(Long.parseLong(paymentDetailsDTO.paymentId()));
-                case REJECTED -> paymentService.markAsRejected(Long.parseLong(paymentDetailsDTO.paymentId()));
+                case APPROVED -> paymentService.markAsPaid(Long.parseLong(paymentDetailsDTO.internalPaymentId()));
+                case REJECTED -> paymentService.markAsRejected(Long.parseLong(paymentDetailsDTO.internalPaymentId()));
             }
         }
     }
