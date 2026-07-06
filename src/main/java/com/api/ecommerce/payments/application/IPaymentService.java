@@ -10,4 +10,6 @@ public interface IPaymentService {
     void markAsRejected(Long paymentId);
     Payment getOrCreateAttemptPayment(Order order);
     void attachPreferenceId(Payment payment, String id);
+    void attachMercadoPagoPaymentId(Payment payment, String mercadoPagoPaymentId);
+    Payment findById(String s);
 }

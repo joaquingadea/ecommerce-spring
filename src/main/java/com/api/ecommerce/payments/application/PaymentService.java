@@ -70,4 +70,15 @@ public class PaymentService implements IPaymentService {
         payment.setMercadoPagoPreferenceId(prefId);
         paymentRepository.save(payment);
     }
+
+    @Override
+    public void attachMercadoPagoPaymentId(Payment payment, String mercadoPagoPaymentId) {
+        payment.setMercadoPagoPaymentId(Long.parseLong(mercadoPagoPaymentId));
+        paymentRepository.save(payment);
+    }
+
+    @Override
+    public Payment findById(String s) {
+        return paymentRepository.findById(Long.parseLong(s)).orElseThrow();
+    }
 }
