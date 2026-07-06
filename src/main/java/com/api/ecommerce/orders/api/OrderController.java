@@ -35,7 +35,13 @@ public class OrderController {
     @PostMapping("/checkout/start")
     public ResponseEntity<StartCheckoutDTO> startCheckout(@AuthenticationPrincipal JwtPrincipal auth){
         return ResponseEntity.status(HttpStatus.OK)
-                .body(checkoutService.checkout(auth.userId()));
+                .body(checkoutService.startCheckout(auth.userId()));
+    }
+    
+    @PostMapping("/{orderId}/pay")
+    public ResponseEntity<PaymentCheckoutDTO> payOrder(@PathVariable Long orderId, @AuthenticationPrincipal JwtPrincipal auth){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(checkoutService.payOrder(orderId, auth.userId()));
     }
     @GetMapping("/get-my-orders")
     public ResponseEntity<Page<MyOrderDTO>> getMyOrders(
