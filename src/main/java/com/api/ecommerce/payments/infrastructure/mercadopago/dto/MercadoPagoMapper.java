@@ -60,7 +60,7 @@ public class MercadoPagoMapper {
                         .id(p.orderDetailId())
                         .title(p.name())
                         .description(p.description())
-                        .pictureUrl(urlBackend.concat(p.firstImageUrl()))
+                        .pictureUrl(p.firstImageUrl())
                         .quantity(p.quantity())
                         .unitPrice(p.unitPrice())
                         .build()
