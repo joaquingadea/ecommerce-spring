@@ -9,7 +9,7 @@ public record ExternalPaymentDetailsDTO(
         String id,
         PaymentStatus status,
         BigDecimal amount,
-        String paymentId,
+        String internalPaymentId,
         String paymentType,       // credit_card, debit_card, etc.
         LocalDateTime createdAt,
         LocalDateTime approvedAt // puede ser null si no está aprobado
