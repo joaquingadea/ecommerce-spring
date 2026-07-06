@@ -61,12 +61,14 @@ public class CheckoutService {
         );
     }
 
+    public PaymentCheckoutDTO payOrder(Long orderId, Long userId){
+        Order pendingOrder = orderService.getPendingOrder(orderId,userId);
         // se crea el intento de pago o se obtiene el pendiente (se tira una excepcion si esta aprobado)
-        Payment payment = paymentService.getOrCreateAttemptPayment(order);
+        Payment payment = paymentService.getOrCreateAttemptPayment(pendingOrder);
         // payment de MP
         CreatePaymentDTO requestDTO = new CreatePaymentDTO(
-                order.getId(),
-                order.getOrderDetails().stream().map(orderDetail -> new PaymentItemDTO(
+                pendingOrder.getId(),
+                pendingOrder.getOrderDetails().stream().map(orderDetail -> new PaymentItemDTO(
                         orderDetail.getId().toString(),
                         orderDetail.getProduct().getName(),
                         orderDetail.getProduct().getDescription(),
@@ -74,16 +76,15 @@ public class CheckoutService {
                         orderDetail.getProduct().getImages().get(0).getUrl(),
                         orderDetail.getUnitPrice()
                 )).toList(),
-                urlFrontEcommerce + "/mp/success",
-                urlFrontEcommerce + "/mp/pending",
-                urlFrontEcommerce + "/mp/failure"
+                urlFrontEcommerce + "/payment-success.html",
+                urlFrontEcommerce + "/payment-pending.html",
+                urlFrontEcommerce + "/payment-failure.html"
         );
 
         PaymentCreationResultDTO paymentResultDTO = paymentGateway.createPayment(requestDTO);
 
         payment.setMercadoPagoPreferenceId(paymentResultDTO.preferenceId());
 
-        return new CheckoutResponseDTO(paymentResultDTO.checkoutUrl());
+        return new PaymentCheckoutDTO(paymentResultDTO.checkoutUrl());
     }
-
 }
