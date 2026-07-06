@@ -49,7 +49,12 @@ public class MercadoPagoPaymentGateway implements PaymentGateway {
 
         CreatePreferenceDTO dto = mercadoPagoMapper.toCreatePreferenceDTO(request);
 
-        Preference preference = createPreference(dto);
+        Preference preference = null;
+        try {
+            preference = createPreference(dto);
+        } catch (MPException | MPApiException e) { // modificar luego
+            throw new RuntimeException(e);
+        }
 
         return new PaymentCreationResultDTO(
                 preference.getId(), // setteo de preference id
@@ -58,7 +63,7 @@ public class MercadoPagoPaymentGateway implements PaymentGateway {
 
     }
 
-    public Preference createPreference(CreatePreferenceDTO dto){
+    public Preference createPreference(CreatePreferenceDTO dto) throws MPException, MPApiException {
 
         PreferenceRequest preferenceRequest = PreferenceRequest.builder()
                 .items(dto.items())
@@ -71,7 +76,8 @@ public class MercadoPagoPaymentGateway implements PaymentGateway {
             return preferenceClient.create(preferenceRequest);
         }
         catch (MPException | MPApiException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace(); // eliminar luego
+            throw e;
         }
     }
 }
