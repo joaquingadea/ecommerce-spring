@@ -37,7 +37,7 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(checkoutService.startCheckout(auth.userId()));
     }
-    
+
     @PostMapping("/{orderId}/pay")
     public ResponseEntity<PaymentCheckoutDTO> payOrder(@PathVariable Long orderId, @AuthenticationPrincipal JwtPrincipal auth){
         return ResponseEntity.status(HttpStatus.OK)
@@ -54,14 +54,14 @@ public class OrderController {
     }
 
     @GetMapping("/get-my-order-details")
-    public ResponseEntity<List<MyOrderDetailsDTO>> getMyOrderDetails(@RequestParam Long orderId, @AuthenticationPrincipal JwtPrincipal auth){
+    public ResponseEntity<List<MyOrderDetailDTO>> getMyOrderDetails(@RequestParam Long orderId, @AuthenticationPrincipal JwtPrincipal auth){
         return ResponseEntity.status(HttpStatus.OK)
                 .body(orderService.getMyOrderDetails(orderId,auth.userId()));
     }
 
-    @GetMapping("/get-my-pending-order")
-    public ResponseEntity<MyOrderDTO> getMyPendingOrder(@AuthenticationPrincipal JwtPrincipal auth){
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(orderService.getMyPendingOrder(auth.userId()));
+    @PatchMapping("/{orderId}/cancel")
+    public ResponseEntity<Void> cancelMyPendingOrder(@PathVariable Long orderId,@AuthenticationPrincipal JwtPrincipal auth){
+        orderService.cancelMyPendingOrder(orderId,auth.userId());
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
