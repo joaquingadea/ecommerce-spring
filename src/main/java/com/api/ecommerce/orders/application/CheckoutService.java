@@ -4,7 +4,8 @@ import com.api.ecommerce.cart.application.ICartService;
 import com.api.ecommerce.cart.domain.Cart;
 import com.api.ecommerce.cart.infrastructure.ICartRepository;
 import com.api.ecommerce.orders.domain.Order;
-import com.api.ecommerce.orders.dto.response.CheckoutResponseDTO;
+import com.api.ecommerce.orders.dto.response.PaymentCheckoutDTO;
+import com.api.ecommerce.orders.dto.response.StartCheckoutDTO;
 import com.api.ecommerce.payments.application.IPaymentService;
 import com.api.ecommerce.payments.domain.Payment;
 import com.api.ecommerce.payments.domain.PaymentGateway;
@@ -14,6 +15,8 @@ import com.api.ecommerce.payments.dto.response.PaymentCreationResultDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
 
 @Service
 @Transactional
@@ -36,12 +39,28 @@ public class CheckoutService {
         this.cartService = cartService;
     }
 
-    public CheckoutResponseDTO checkout(Long userId){
-        // obtener y validar carrito
+    public StartCheckoutDTO startCheckout(Long userId) {
+        record CheckoutOrderDetailDTO(String productName, Integer quantity, BigDecimal unitPrice, BigDecimal subtotal){}
+
         Cart cart = cartRepository.findByUserId(userId).orElseThrow();
         cartService.validateCart(cart);
-        // se crea la orden para BD
-        Order order = orderService.getOrCreateOrder(userId,cart);
+        Order order = orderService.createOrder(userId, cart);
+
+        return new StartCheckoutDTO(
+                order.getId(),
+                order.getTotal(),
+                order.getStatus(),
+                order.getOrderDetails().stream()
+                        .map(orderDetail ->
+                                new CheckoutOrderDetailDTO(
+                                        orderDetail.getProduct().getName(),
+                                        orderDetail.getQuantity(),
+                                        orderDetail.getUnitPrice(),
+                                        orderDetail.getSubtotal()
+                                )).toList()
+        );
+    }
+
         // se crea el intento de pago o se obtiene el pendiente (se tira una excepcion si esta aprobado)
         Payment payment = paymentService.getOrCreateAttemptPayment(order);
         // payment de MP
