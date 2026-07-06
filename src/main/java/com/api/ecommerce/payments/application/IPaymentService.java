@@ -9,4 +9,5 @@ public interface IPaymentService {
     void markAsPaid(Long paymentId);
     void markAsRejected(Long paymentId);
     Payment getOrCreateAttemptPayment(Order order);
+    void attachPreferenceId(Payment payment, String id);
 }

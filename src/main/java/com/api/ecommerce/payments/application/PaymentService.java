@@ -64,4 +64,10 @@ public class PaymentService implements IPaymentService {
                 .findFirst()
                 .orElseGet(() -> createAttemptPayment(order));
     }
+
+    @Override
+    public void attachPreferenceId(Payment payment, String prefId) {
+        payment.setMercadoPagoPreferenceId(prefId);
+        paymentRepository.save(payment);
+    }
 }
