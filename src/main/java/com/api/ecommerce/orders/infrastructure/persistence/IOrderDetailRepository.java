@@ -1,7 +1,7 @@
 package com.api.ecommerce.orders.infrastructure.persistence;
 
 import com.api.ecommerce.orders.domain.OrderDetail;
-import com.api.ecommerce.orders.dto.response.MyOrderDetailsDTO;
+import com.api.ecommerce.orders.dto.response.MyOrderDetailDTO;
 import com.api.ecommerce.orders.dto.response.OrderDetailDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -28,5 +28,5 @@ public interface IOrderDetailRepository extends JpaRepository<OrderDetail,Long> 
         WHERE od.order.id = :orderId
         AND od.order.user.id = :userId
     """)
-    List<MyOrderDetailsDTO> findByOrderIdAndUserId(Long orderId, Long userId);
+    List<MyOrderDetailDTO> findByOrderIdAndUserId(Long orderId, Long userId);
 }
