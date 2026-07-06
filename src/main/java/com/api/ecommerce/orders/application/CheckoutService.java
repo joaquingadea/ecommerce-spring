@@ -83,8 +83,7 @@ public class CheckoutService {
 
         PaymentCreationResultDTO paymentResultDTO = paymentGateway.createPayment(requestDTO);
 
-        payment.setMercadoPagoPreferenceId(paymentResultDTO.preferenceId());
-
+        paymentService.attachPreferenceId(payment, paymentResultDTO.preferenceId());
         return new PaymentCheckoutDTO(paymentResultDTO.checkoutUrl());
     }
 }
