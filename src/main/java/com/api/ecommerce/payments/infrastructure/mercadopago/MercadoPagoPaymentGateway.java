@@ -77,6 +77,8 @@ public class MercadoPagoPaymentGateway implements PaymentGateway {
         }
         catch (MPException | MPApiException e) {
             e.printStackTrace(); // eliminar luego
+            System.out.println("Clase: " + e.getClass());
+            System.out.println("Mensaje: " + e.getMessage());
             throw e;
         }
     }
