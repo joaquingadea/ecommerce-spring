@@ -2,9 +2,10 @@ package com.api.ecommerce.orders.api;
 
 import com.api.ecommerce.orders.application.CheckoutService;
 import com.api.ecommerce.orders.application.IOrderService;
-import com.api.ecommerce.orders.dto.response.CheckoutResponseDTO;
+import com.api.ecommerce.orders.dto.response.PaymentCheckoutDTO;
 import com.api.ecommerce.orders.dto.response.MyOrderDTO;
-import com.api.ecommerce.orders.dto.response.MyOrderDetailsDTO;
+import com.api.ecommerce.orders.dto.response.MyOrderDetailDTO;
+import com.api.ecommerce.orders.dto.response.StartCheckoutDTO;
 import com.api.ecommerce.shared.security.jwt.JwtPrincipal;
 import com.api.ecommerce.shared.web.PaginationConstants;
 import org.apache.coyote.BadRequestException;
@@ -31,8 +32,8 @@ public class OrderController {
         this.checkoutService = checkoutService;
     }
 
-    @PostMapping("/checkout")
-    public ResponseEntity<CheckoutResponseDTO> checkout(@AuthenticationPrincipal JwtPrincipal auth){
+    @PostMapping("/checkout/start")
+    public ResponseEntity<StartCheckoutDTO> startCheckout(@AuthenticationPrincipal JwtPrincipal auth){
         return ResponseEntity.status(HttpStatus.OK)
                 .body(checkoutService.checkout(auth.userId()));
     }
