@@ -5,11 +5,12 @@ import com.api.ecommerce.orders.domain.Order;
 import com.api.ecommerce.orders.domain.OrderDetail;
 import com.api.ecommerce.orders.domain.OrderStatus;
 import com.api.ecommerce.orders.dto.response.MyOrderDTO;
-import com.api.ecommerce.orders.dto.response.MyOrderDetailsDTO;
+import com.api.ecommerce.orders.dto.response.MyOrderDetailDTO;
 import com.api.ecommerce.orders.dto.response.OrderDTO;
 import com.api.ecommerce.orders.dto.response.OrderDetailDTO;
 import com.api.ecommerce.orders.infrastructure.persistence.IOrderDetailRepository;
 import com.api.ecommerce.orders.infrastructure.persistence.IOrderRepository;
+import com.api.ecommerce.users.infrastructure.persistence.IAppUserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -54,15 +55,19 @@ public class OrderService implements IOrderService{
         order.setOrderDetails(orderDetails);
         order.setStatus(OrderStatus.PENDING);
         order.setCreatedAt(LocalDateTime.now());
+        order.setUser(cart.getUser());
         orderRepository.save(order);
         return order;
     }
 
     @Override
-    public Order getOrCreateOrder(Long userId, Cart cart) {
-        return orderRepository
-                .findByUserIdAndStatus(userId,OrderStatus.PENDING)
-                .orElseGet(() -> createOrderFromCart(cart));
+    public Order createOrder(Long userId, Cart cart) {
+        if (orderRepository.findByUserIdAndStatus(userId, OrderStatus.PENDING).isPresent()) {
+            throw new RuntimeException(
+                    "You already have a pending order."
+            );
+        }
+        return createOrderFromCart(cart);
     }
     @Override
     public Page<OrderDTO> getOrders(Pageable ordersPageable) {
@@ -80,12 +85,22 @@ public class OrderService implements IOrderService{
     }
 
     @Override
-    public MyOrderDTO getMyPendingOrder(Long userId) {
-        return orderRepository.findByUserId(userId);
+    public List<MyOrderDetailDTO> getMyOrderDetails(Long orderId, Long userId) {
+        return orderDetailRepository.findByOrderIdAndUserId(orderId,userId);
     }
 
     @Override
-    public List<MyOrderDetailsDTO> getMyOrderDetails(Long orderId, Long userId) {
-        return orderDetailRepository.findByOrderIdAndUserId(orderId,userId);
+    public void cancelMyPendingOrder(Long orderId, Long userId) {
+        Order orderRepo = this.getPendingOrder(orderId,userId);
+        orderRepo.setStatus(OrderStatus.CANCELLED);
+    }
+
+    @Override
+    public Order getPendingOrder(Long orderId, Long userId) {
+        Order orderRepo = orderRepository.findByIdAndUserId(orderId,userId).orElseThrow();
+        if (!orderRepo.getStatus().equals(OrderStatus.PENDING)){
+            throw new RuntimeException("This order is not pending or not exists!");
+        }
+        return orderRepo;
     }
 }
