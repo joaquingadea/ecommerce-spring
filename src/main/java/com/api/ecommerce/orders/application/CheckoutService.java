@@ -67,7 +67,7 @@ public class CheckoutService {
         Payment payment = paymentService.getOrCreateAttemptPayment(pendingOrder);
         // payment de MP
         CreatePaymentDTO requestDTO = new CreatePaymentDTO(
-                pendingOrder.getId(),
+                payment.getId(),
                 pendingOrder.getOrderDetails().stream().map(orderDetail -> new PaymentItemDTO(
                         orderDetail.getId().toString(),
                         orderDetail.getProduct().getName(),
